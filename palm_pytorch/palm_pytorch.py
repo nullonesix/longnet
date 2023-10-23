@@ -2,10 +2,27 @@ import torch
 import torch.nn.functional as F
 from einops import rearrange
 from torch import einsum, nn
+import numpy as np
+from tqdm import tqdm
 
 # normalization
 # they use layernorm without bias, something that pytorch does not offer
 
+n = 1024 + 400
+device = 'cuda:0'
+mask = torch.ones((n, n), device=device, dtype=torch.bool).triu(1)
+k = 0
+segment_lengths = [4, 8, 16]
+dilation_rates = [1, 2, 4]
+for i in tqdm(range(len(mask))):
+    for j in range(len(mask[0])):
+        will_mask = True
+        for segment_length, dilation_rate in zip(segment_lengths, dilation_rates):
+            if np.floor(i/segment_length) == np.floor(j/segment_length) and i % dilation_rate == 0 and j % dilation_rate == 0:
+                will_mask = False
+        if will_mask:
+            mask[i][j] = True
+        k += 1
 
 class LayerNorm(nn.Module):
     def __init__(self, dim):
@@ -95,6 +112,8 @@ class ParallelTransformerBlock(nn.Module):
         self.register_buffer("pos_emb", None, persistent=False)
 
     def get_mask(self, n, device):
+        global mask
+        self.mask = mask
         if self.mask is not None and self.mask.shape[-1] >= n:
             return self.mask[:n, :n]
 
