@@ -1,3 +1,11 @@
+# longnet
+A quick implementation of LongNet based on the PaLM transformer implementation by lucidrains: https://github.com/lucidrains/PaLM-pytorch and the LongNet paper: https://arxiv.org/pdf/2307.02486.pdf.
+
+The mask function is modified for dilated attention:
+
+![alt text](https://raw.githubusercontent.com/nullonesix/longnet/main/longnet.png)
+
+
 <img src="./palm.gif" width="450px"></img>
 
 ## PaLM - Pytorch
