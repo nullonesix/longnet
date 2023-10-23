@@ -5,6 +5,13 @@ The mask function is modified for dilated attention:
 
 ![alt text](https://raw.githubusercontent.com/nullonesix/longnet/main/longnet.png)
 
+```
+python3 train.py
+```
+
+
+
+
 
 <img src="./palm.gif" width="450px"></img>
 
